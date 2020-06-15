@@ -3,8 +3,11 @@ import qrcode
 import pygame
 
 import pibooth
+from pibooth.utils import LOGGER
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
+
+
 
 @pibooth.hookimpl
 def pibooth_configure(cfg):
@@ -25,6 +28,14 @@ def pibooth_configure(cfg):
                            '("darkblue", "transparent")'])
 
 @pibooth.hookimpl
+def pibooth_startup(app, cfg):
+    """display if plugin is activate."""
+    if cfg.getboolean('QRCODE', 'activate'):
+        LOGGER.info("Plugin 'QRCODE' is enable")
+    else:
+        LOGGER.info("Plugin 'QRCODE' is disable")
+    
+@pibooth.hookimpl
 def state_wait_enter(app, win, cfg):
     """
     Display the QR Code on the wait view.
@@ -32,7 +43,7 @@ def state_wait_enter(app, win, cfg):
     if hasattr(app, 'previous_qr') and cfg.getboolean('QRCODE', 'activate'):
         win_rect = win.get_rect()
         qr_rect = app.previous_qr.get_rect()
-        win.surface.blit(app.previous_qr, (10, win_rect.height - qr_rect.height - 10))
+        win.surface.blit(app.previous_qr, (60, win_rect.height - qr_rect.height - 10))
 
 
 @pibooth.hookimpl
